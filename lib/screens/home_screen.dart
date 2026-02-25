@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../widgets/playlist_card.dart';
 import 'stats_screen.dart';
+import 'visualizer_screen.dart';
+import 'favorites_screen.dart';
+import 'rss_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -39,10 +42,28 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const StatsScreen()),
+                MaterialPageRoute(builder: (context) => StatsScreen()),
               );
             },
-          )
+          ),
+          IconButton(
+            icon: const Icon(Icons.graphic_eq),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => VisualizerScreen()),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.rss_feed),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RSSScreen()),
+              );
+            },
+          ),
         ],
       ),
 
@@ -68,7 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: GridView.builder(
                 itemCount: playlists.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate:
+                const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
@@ -79,8 +101,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       setState(() {
                         nowPlaying = playlists[index];
                       });
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FavoritesScreen(),
+                          settings: RouteSettings(
+                            arguments: playlists[index],
+                          ),
+                        ),
+                      );
                     },
-                    child: PlaylistCard(title: playlists[index]),
+                    child: PlaylistCard(
+                      title: playlists[index],
+                    ),
                   );
                 },
               ),
