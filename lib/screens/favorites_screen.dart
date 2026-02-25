@@ -15,35 +15,35 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   void initState() {
     super.initState();
-    loadFavorites();
+    _loadFavorites();
   }
 
-  Future<void> loadFavorites() async {
+  Future<void> _loadFavorites() async {
     final data = await DBService.getFavorites();
     setState(() {
       favorites = data;
     });
   }
 
-  Future<void> addFavorite(String name) async {
+  Future<void> _addFavorite(String name) async {
     await DBService.insertFavorite(name);
-    loadFavorites();
+    _loadFavorites();
   }
 
   @override
   Widget build(BuildContext context) {
+
     final String? playlist =
     ModalRoute.of(context)?.settings.arguments as String?;
 
     if (playlist != null) {
-      addFavorite(playlist);
+      _addFavorite(playlist);
     }
 
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        elevation: 0,
         title: const Text("Favorites"),
       ),
       body: favorites.isEmpty

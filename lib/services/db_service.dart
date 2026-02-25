@@ -6,25 +6,23 @@ class DBService {
 
   static Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await initDB();
+    _database = await _initDB();
     return _database!;
   }
 
-  static Future<Database> initDB() async {
+  static Future<Database> _initDB() async {
     String path = join(await getDatabasesPath(), 'favorites.db');
 
     return await openDatabase(
       path,
       version: 1,
       onCreate: (db, version) async {
-        await db.execute(
-          '''
+        await db.execute('''
           CREATE TABLE favorites(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT
+            name TEXT NOT NULL
           )
-          ''',
-        );
+        ''');
       },
     );
   }

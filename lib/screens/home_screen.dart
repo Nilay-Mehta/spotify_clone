@@ -37,6 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(color: Colors.white),
         ),
         actions: [
+
+          // Calculator-style screen
           IconButton(
             icon: const Icon(Icons.analytics),
             onPressed: () {
@@ -46,6 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
+
+          // Custom drawing screen
           IconButton(
             icon: const Icon(Icons.graphic_eq),
             onPressed: () {
@@ -55,6 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
+
+          // RSS/API screen
           IconButton(
             icon: const Icon(Icons.rss_feed),
             onPressed: () {
