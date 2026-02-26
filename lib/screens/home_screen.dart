@@ -29,16 +29,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
 
+      // ✅ Experiment 3 AppBar
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        elevation: 0,
+        backgroundColor: const Color.fromARGB(255, 30, 215, 96),
         title: const Text(
           "Spotify",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
         actions: [
-
-          // Calculator-style screen
           IconButton(
             icon: const Icon(Icons.analytics),
             onPressed: () {
@@ -48,8 +47,6 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-
-          // Custom drawing screen
           IconButton(
             icon: const Icon(Icons.graphic_eq),
             onPressed: () {
@@ -59,8 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-
-          // RSS/API screen
           IconButton(
             icon: const Icon(Icons.rss_feed),
             onPressed: () {
@@ -73,6 +68,47 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
+      // ✅ Drawer with Favorites
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 30, 215, 96),
+              ),
+              child: Text(
+                "Spotify App",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text("Home"),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.favorite),
+              title: const Text("Favorites"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FavoritesScreen(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -80,6 +116,20 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
 
             const SizedBox(height: 10),
+
+            const Center(
+              child: Text(
+                "Your Music. Your Mood.",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
 
             const Text(
               "Recently Played",
@@ -107,16 +157,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       setState(() {
                         nowPlaying = playlists[index];
                       });
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const FavoritesScreen(),
-                          settings: RouteSettings(
-                            arguments: playlists[index],
-                          ),
-                        ),
-                      );
                     },
                     child: PlaylistCard(
                       title: playlists[index],

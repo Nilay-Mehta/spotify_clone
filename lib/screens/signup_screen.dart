@@ -1,36 +1,35 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
-import 'signup_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
 
   final _formKey = GlobalKey<FormState>();
   String username = "";
   String password = "";
+  String confirmPassword = "";
 
-  void _login() {
+  void _register() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      if (username == "admin" && password == "1234") {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
-      } else {
+      if (password != confirmPassword) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Invalid username or password"),
-          ),
+          const SnackBar(content: Text("Passwords do not match")),
         );
+        return;
       }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Registration Successful")),
+      );
+
+      Navigator.pop(context);
     }
   }
 
@@ -40,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 30, 215, 96),
-        title: const Text("Login"),
+        title: const Text("Sign Up"),
         centerTitle: true,
       ),
       body: Padding(
@@ -75,26 +74,25 @@ class _LoginScreenState extends State<LoginScreen> {
                 onSaved: (value) => password = value!,
               ),
 
+              const SizedBox(height: 20),
+
+              TextFormField(
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  labelText: "Confirm Password",
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
+                validator: (value) =>
+                value == null || value.isEmpty ? "Confirm password" : null,
+                onSaved: (value) => confirmPassword = value!,
+              ),
+
               const SizedBox(height: 30),
 
               ElevatedButton(
-                onPressed: _login,
-                child: const Text("Login"),
-              ),
-
-              const SizedBox(height: 20),
-
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SignUpScreen()),
-                  );
-                },
-                child: const Text(
-                  "Don't have an account? Sign Up",
-                  style: TextStyle(color: Colors.green),
-                ),
+                onPressed: _register,
+                child: const Text("Register"),
               ),
             ],
           ),
