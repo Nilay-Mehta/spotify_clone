@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/db_service.dart';
 import 'home_screen.dart';
 import 'signup_screen.dart';
 
@@ -10,16 +11,21 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   final _formKey = GlobalKey<FormState>();
   String username = "";
   String password = "";
+  bool _loading = false;
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      setState(() => _loading = true);
 
-      if (username == "admin" && password == "1234") {
+      final success = await DBService.loginUser(username, password);
+
+      setState(() => _loading = false);
+
+      if (success) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -28,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Invalid username or password"),
+            backgroundColor: Colors.red,
           ),
         );
       }
@@ -38,65 +45,155 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 30, 215, 96),
-        title: const Text("Login"),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-
-              TextFormField(
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: "Username",
-                  labelStyle: TextStyle(color: Colors.white),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(32),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.music_note,
+                  color: Color.fromARGB(255, 30, 215, 96),
+                  size: 80,
                 ),
-                validator: (value) =>
-                value == null || value.isEmpty ? "Enter username" : null,
-                onSaved: (value) => username = value!,
-              ),
-
-              const SizedBox(height: 20),
-
-              TextFormField(
-                obscureText: true,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: "Password",
-                  labelStyle: TextStyle(color: Colors.white),
+                const SizedBox(height: 12),
+                const Text(
+                  "Spotify",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 30, 215, 96),
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                validator: (value) =>
-                value == null || value.isEmpty ? "Enter password" : null,
-                onSaved: (value) => password = value!,
-              ),
-
-              const SizedBox(height: 30),
-
-              ElevatedButton(
-                onPressed: _login,
-                child: const Text("Login"),
-              ),
-
-              const SizedBox(height: 20),
-
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SignUpScreen()),
-                  );
-                },
-                child: const Text(
-                  "Don't have an account? Sign Up",
-                  style: TextStyle(color: Colors.green),
+                const SizedBox(height: 8),
+                Text(
+                  "Login to continue",
+                  style: TextStyle(color: Colors.grey[400], fontSize: 14),
                 ),
-              ),
-            ],
+                const SizedBox(height: 40),
+
+                TextFormField(
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: "Username",
+                    labelStyle: TextStyle(color: Colors.grey[400]),
+                    prefixIcon: const Icon(Icons.person, color: Color.fromARGB(255, 30, 215, 96)),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey[700]!),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Color.fromARGB(255, 30, 215, 96)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[900],
+                  ),
+                  validator: (value) =>
+                      value == null || value.isEmpty ? "Enter username" : null,
+                  onSaved: (value) => username = value!,
+                ),
+
+                const SizedBox(height: 16),
+
+                TextFormField(
+                  obscureText: true,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    labelStyle: TextStyle(color: Colors.grey[400]),
+                    prefixIcon: const Icon(Icons.lock, color: Color.fromARGB(255, 30, 215, 96)),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey[700]!),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Color.fromARGB(255, 30, 215, 96)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.red),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[900],
+                  ),
+                  validator: (value) =>
+                      value == null || value.isEmpty ? "Enter password" : null,
+                  onSaved: (value) => password = value!,
+                ),
+
+                const SizedBox(height: 24),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: _loading ? null : _login,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 30, 215, 96),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    child: _loading
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(color: Colors.black, strokeWidth: 2),
+                          )
+                        : const Text(
+                            "LOG IN",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                    );
+                  },
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Don't have an account? ",
+                      style: TextStyle(color: Colors.grey[400]),
+                      children: const [
+                        TextSpan(
+                          text: "Sign Up",
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 30, 215, 96),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
